@@ -1,0 +1,9 @@
+language: c++
+primary_contact: private@example.invalid
+auto_ccs:
+  - private@example.invalid
+fuzzing_engines:
+  - libfuzzer
+sanitizers:
+  - address
+main_repo: PRIVATE
