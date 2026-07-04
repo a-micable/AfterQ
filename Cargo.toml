@@ -1,0 +1,12 @@
+[package]
+name = "afterq"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "afterq"
+path = "src/lib.rs"
+
+[[bin]]
+name = "afterq"
+path = "src/main.rs"

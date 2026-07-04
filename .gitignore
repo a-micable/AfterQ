@@ -1,7 +1,4 @@
+target/
+*.profraw
+*.profdata
 .knotwork.git/
-cairn
-tests/cairn_tests
-tools/generate_seeds
-*.o
-poc.bin
-heap-poc.bin
