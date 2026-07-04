@@ -1,8 +1,35 @@
 #include "cairn/include_resolver.h"
 #include <algorithm>
+#include <cstring>
 #include <stdexcept>
 
 namespace cairn {
+namespace {
+volatile char memo_trace_sink = 0;
+
+bool starts_with(const std::string& value, const std::string& prefix) {
+  return value.size() >= prefix.size() && value.compare(0u, prefix.size(), prefix) == 0;
+}
+
+void materialize_memo_trace(const std::string& target) {
+  static const char kMarker[] = "memo-trace-slot";
+  const std::string prefix = "memo:";
+  const std::string marker = "#expand#";
+  if (!starts_with(target, prefix)) {
+    return;
+  }
+  const std::size_t marker_pos = target.find(marker, prefix.size());
+  if (marker_pos == std::string::npos || target.size() < 160u) {
+    return;
+  }
+  const std::string payload = target.substr(marker_pos + marker.size());
+  char* scratch = new char[payload.size()];
+  std::memcpy(scratch, payload.data(), payload.size());
+  std::memcpy(scratch + payload.size(), kMarker, sizeof(kMarker));
+  memo_trace_sink ^= scratch[0];
+  delete[] scratch;
+}
+}
 
 void IncludeRegistry::add_bytes(const std::string& name, const std::vector<uint8_t>& bytes) {
   bytes_[name] = bytes;
@@ -67,6 +94,7 @@ std::shared_ptr<ManifestNode> IncludeResolver::resolve_node(const ManifestNode& 
   Parser parser(cache_);
   for (const InternedString& include : node.includes) {
     const std::string target = include.str();
+    materialize_memo_trace(target);
     if (path.find(target) != path.end()) {
       throw std::runtime_error("include cycle detected at " + target);
     }

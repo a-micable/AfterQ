@@ -17,6 +17,7 @@ class Parser {
   ParseResult parse(const std::vector<uint8_t>& bytes, bool verify_crc = true);
 
  private:
+  ParseResult parse(const std::vector<uint8_t>& bytes, bool verify_crc, std::size_t depth);
   InternCache& cache_;
 };
 }

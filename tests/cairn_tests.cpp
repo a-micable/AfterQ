@@ -41,6 +41,21 @@ std::shared_ptr<cairn::ManifestNode> resolve_all(cairn::InternCache& cache, cons
   return resolver.resolve(*parsed.root);
 }
 
+std::vector<uint8_t> nested_conditional(int depth) {
+  cairn::ManifestWriter leaf;
+  leaf.section("root");
+  leaf.field_string("leaf", "ok");
+  std::vector<uint8_t> bytes = leaf.bytes();
+  for (int i = 0; i < depth; ++i) {
+    cairn::ManifestWriter w;
+    w.section("root");
+    w.field_boolean("gate", true);
+    w.conditional("gate", bytes);
+    bytes = w.bytes();
+  }
+  return bytes;
+}
+
 void write_temp(const std::string& path, const std::vector<uint8_t>& bytes) {
   std::ofstream out(path, std::ios::binary);
   out.write(reinterpret_cast<const char*>(bytes.data()), static_cast<std::streamsize>(bytes.size()));
@@ -304,5 +319,15 @@ int main() {
       expect(!resolved->fields.empty(), "scenario manifest resolves");
     }
   }
-  std::cout << "25 tests passed\n";
+  {
+    cairn::InternCache cache(32);
+    bool threw = false;
+    try {
+      (void)parse(cache, nested_conditional(80));
+    } catch (...) {
+      threw = true;
+    }
+    expect(threw, "nested conditional depth limit");
+  }
+  std::cout << "26 tests passed\n";
 }

@@ -5,6 +5,8 @@
 
 namespace cairn {
 namespace {
+constexpr std::size_t kMaxNestedManifestDepth = 64u;
+
 class Reader {
  public:
   Reader(const uint8_t* data, std::size_t size) : data_(data), size_(size) {}
@@ -108,6 +110,13 @@ void require_payload_done(Reader& payload) {
 Parser::Parser(InternCache& cache) : cache_(cache) {}
 
 ParseResult Parser::parse(const std::vector<uint8_t>& bytes, bool verify_crc) {
+  return parse(bytes, verify_crc, 0u);
+}
+
+ParseResult Parser::parse(const std::vector<uint8_t>& bytes, bool verify_crc, std::size_t depth) {
+  if (depth > kMaxNestedManifestDepth) {
+    throw std::runtime_error("nested manifest depth exceeded");
+  }
   Reader top(bytes.data(), bytes.size());
   ParseResult result;
   auto current = std::make_shared<ManifestNode>();
@@ -160,7 +169,7 @@ ParseResult Parser::parse(const std::vector<uint8_t>& bytes, bool verify_crc) {
         const std::vector<uint8_t> nested = payload.bytes(nested_len);
         require_payload_done(payload);
         Parser nested_parser(cache_);
-        block.body = nested_parser.parse(nested, verify_crc).root;
+        block.body = nested_parser.parse(nested, verify_crc, depth + 1u).root;
         current->conditionals.push_back(block);
         break;
       }
