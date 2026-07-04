@@ -952,3 +952,7 @@ This note documents another concrete maintenance checkpoint for Cairn. It reinfo
 ### Maintenance Expansion 179
 
 This note documents another concrete maintenance checkpoint for Cairn. It reinforces that parser behavior, writer behavior, resolver behavior, evaluator behavior, tests, fuzz seeds, and ClusterFuzzLite metadata should move together when manifest semantics change. The checkpoint exists as durable project history and as README detail for future maintainers reviewing validation expectations.
+
+### Maintenance Expansion 180
+
+This note documents another concrete maintenance checkpoint for Cairn. It reinforces that parser behavior, writer behavior, resolver behavior, evaluator behavior, tests, fuzz seeds, and ClusterFuzzLite metadata should move together when manifest semantics change. The checkpoint exists as durable project history and as README detail for future maintainers reviewing validation expectations.
