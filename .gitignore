@@ -1,0 +1,5 @@
+.knotwork.git/
+cairn
+tests/cairn_tests
+tools/generate_seeds
+*.o
