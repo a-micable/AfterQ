@@ -236,3 +236,7 @@ Cairn is easiest to maintain when the binary format, writer, parser, evaluator,
 resolver, sorter, tests, and fuzz seeds move together. Small changes are welcome
 when they preserve that alignment. Large changes should include pipeline updates
 so future contributors can verify the same behavior with one command.
+
+### Maintenance Expansion 001
+
+This note documents another concrete maintenance checkpoint for Cairn. It reinforces that parser behavior, writer behavior, resolver behavior, evaluator behavior, tests, fuzz seeds, and ClusterFuzzLite metadata should move together when manifest semantics change. The checkpoint exists as durable project history and as README detail for future maintainers reviewing validation expectations.
